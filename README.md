@@ -1,2 +1,2 @@
 # penguegg
-Rockhopper Pengiun Egg project
+Rockhopper Penguin Egg project
