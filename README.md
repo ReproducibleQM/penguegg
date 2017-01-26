@@ -7,3 +7,4 @@ This is an endangered penguin found only on Tristan da Cunha, and the French isl
 
 
 [Etherpad](https://etherpad.net/p/Penguegg_notes)
+[Authorea](https://www.authorea.com/users/140246/articles/150844)
