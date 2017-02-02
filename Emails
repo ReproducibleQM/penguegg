@@ -1,7 +1,5 @@
 Answers about the database:
 
- 
-
 1.       Correct.
 
 a.       Ditsong = Ditsong National Museum of Natural History (formerly called the Transvaal Museum), Pretoria, South Africa
@@ -44,7 +42,7 @@ k.       ZMUO = Zoological Museum, University of Oslo, Oslo, Norway
 
 Answers about authorship
 
-What you propose sounds good to me. There are three others who were involved in data collection and generating the ideas:
+There are three others who were involved in data collection and generating the ideas:
 
 ·         Dr Greg McClelland, who was with the RSPB & Tristan da Cunha Conservation Department
 
@@ -52,65 +50,7 @@ What you propose sounds good to me. There are three others who were involved in 
 
 ·         Dr Peter Ryan, Percy FitzPatrick Institute of African Ornithology, University of Cape Town
 
- 
-
-They?ve all been told about the work you folks are doing, and didn?t raise any objections. When you?re ready to discuss authorship, let me know and I can e-introduce everyone. Note that Peter is on a ship at sea until late March without email, however, and Trevor is quite busy and may not respond. His background isn?t science, and there are some cultural sensitivities around penguins on Tristan, so if you hear nothing back after your initial email, I will likely end up calling him to talk things over (and he?s usually fine with whatever is proposed).
-
- 
-
-What do you envision as your timeline? I have some field work planned for April/May.
-
- 
-
-I hope that answers everything, but if not, just drop me a line. I may be away for a few days next week, but will respond as soon as I can.
-
- 
-
-Cheers,
-
-Alex
-
- 
-
- 
-
- 
-
- 
-
-From: Tracy Montgomery [mailto:tracymmontgomery@gmail.com]
-Sent: 26 January 2017 18:25
-To: Bond, Alex <Alex.Bond@rspb.org.uk>
-Cc: Christie Bahlai <cbahlai@msu.edu>; Maggie Sawdy <maggie.sawdy@gmail.com>; Connie Rojas <conniearojas6@gmail.com>; straus46@msu.edu; montg215@msu.edu; swemtrac@msu.edu
-Subject: Re: Meet group Penguegg!
-
- 
-
-Hi Alex,
-
-Thank you so much for  suggesting your dataset as our class project! This week we've been creating a data read.me with all the information about the data, as well as discussing authorship. To that end, we have a few questions for you:
-
-Questions about the database:
-
-1. Could you please clarify the Source column? It seems to be indicators for which museum / person owns the eggs, but it would be nice to know what each one means.
-2. Could you please clarify the Reference column? It seems to be an amalgam of who measured it, papers the data came from, harvested vs. known clutches (what does this mean?), and indicators for simulation. How should we interpret missing cells in the Reference column?
-3. Who did the measurements? In Bond et al. 2016, it says the same individual did the all the measurements for that paper. Some of the sampleshere have who measured it in the Reference column, but many do not. Do you have that missing information?
-4. In the publication data tab, there are many new fields for egg measurements. Could you please explain how those were measured?
-5. Is there any way to connect the Publication tab with the main data tab (i.e. by a sampleID or other code)? Or are these other measurements already known to not be important?
-6. Does a lack of the specimen ID indicate anything?
-7. Would you be comfortable with us posting the current data files online, either in the github repo or as a figshare document? We could upload the full dataset or a cleaned version.
-8. Could you give us a little history on the who has been working on this dataset and what was the reason for starting it?
-
-Questions about authorship:
-
-In following with RCR and open science, we would like to discuss authorship and expectations up front with you and your collaborators. From our end, we hope to be able to clean, analyze, write, and publish a paper using this data! From your end, we hope that you can provide us with your biological knowledge of Northern Rockhoppers & the Tristan da Cunha system, your initial ideas about analyzing this data, and your help brainstorming potential biotic and abiotic factors that could affect egg size. We hope to be able to do most of the statistics ourselves, but we may also require some guidance in that realm. Does this seem reasonable to you? What are your expectations from us in this collaboration?
-
-Thank you! We look forward to working with you this semester.
-Tracy (M.), Tracy (S.), Eli, Connie, Maggie, and Christie (aka group Penguegg)
-
- 
-
- 
+ ---------------
 
 On Tue, Jan 17, 2017 at 5:31 AM, Bond, Alex <Alex.Bond@rspb.org.uk> wrote:
 
@@ -145,85 +85,3 @@ On Tue, Jan 17, 2017 at 5:31 AM, Bond, Alex <Alex.Bond@rspb.org.uk> wrote:
      
 
     PS: I?ve also included a short book chapter on the species that has lots of background info.
-
-     
-
-     
-
-    Dr Alex Bond
-    Senior Conservation Scientist
-
-    RSPB Centre for Conservation Science
-    UK Headquarters, The Lodge, Sandy, Bedfordshire SG19 2DL
-    Tel +44 (0)1767 693432
-    Mobile +44 (0)7860 916339
-    Web alexanderbond.org
-
-    rspb.org.uk
-
-    Let's give nature a home
-
-    The RSPB is a member of BirdLife International, a partnership of nature conservation organisations working to give nature a home around the world.
-
-     
-
-    RSPB logo
-    	
-
-    BirdLife International logo
-
-
-    The Royal Society for the Protection of Birds (RSPB) is a registered charity: England and Wales no. 207076, Scotland no. SC037654
-
-     
-
-     
-
-     
-
-     
-
-    From: Christie Bahlai [mailto:cbahlai@msu.edu]
-    Sent: 16 January 2017 19:53
-    To: Bond, Alex <Alex.Bond@rspb.org.uk>
-    Cc: 'Maggie Sawdy' <maggie.sawdy@gmail.com>; 'Connie Rojas' <conniearojas6@gmail.com>; straus46@msu.edu; montg215@msu.edu; swemtrac@msu.edu
-    Subject: Meet group Penguegg!
-
-     
-
-    Hi Alex!
-
-    I?d like you to meet Maggie, Connie, Eli, Tracy (Montgomery) and Tracy (Swem)- the intrepid group of volunteers interested in making this Rockhopper Penguin project happen! We?re going to be diving into data management this week in class, so I thought it best to connect the group as soon as possible.  Would you be able to pass the materials you?d like students to review at your earliest convenience?  We?ve created a github repo to facilitate collaboration and sharing of materials:
-    https://github.com/ReproducibleQM/penguegg
-
-    We can add you on as a collaborator there.
-
-    Looking forward to working with you!
-
-     
-
-    Best,
-
-    -C
-
-     
-
-    Christine (Christie) Bahlai Ph.D.
-
-    Department of Integrative Biology
-
-    Michigan State University
-
-    Phone: +1 (517) 331-0499
-
-    Research: https://sites.google.com/site/cbahlai/
-
-    Blog: http://practicaldatamanagement.wordpress.com/
-
-     
-
-
-
-    This email and any attachments may contain material that is confidential, subject to copyright and intended for the addressee only. If you are not the named recipient you must not use, disclose, reproduce, copy or distribute the contents of this communication. If you have received this in error, please contact the sender and then delete this email from your system. The Royal Society for the Protection of Birds (RSPB) is a registered charity in England and Wales no. 207076 and in Scotland no. SC037654.
-
- 
