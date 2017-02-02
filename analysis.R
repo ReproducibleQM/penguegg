@@ -1,6 +1,4 @@
 #dummy file for code
-x<-10
-
-1+1 == 3
-
-vec<-4*90
+eggSize <- read.csv("https://raw.githubusercontent.com/ReproducibleQM/penguegg/master/NRPE_eggSize.csv")
+head(eggSize)
+plot(data = eggSize, length~year)
