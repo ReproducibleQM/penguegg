@@ -1,87 +1,64 @@
+On Fri, Jan 27, 2017 at 4:47 AM, Alex Bond wrote:
 Answers about the database:
 
-1.       Correct.
+1. Could you please clarify the Source column? It seems to be indicators for which museum / person owns the eggs, but it would be nice to know what each one means.
 
-a.       Ditsong = Ditsong National Museum of Natural History (formerly called the Transvaal Museum), Pretoria, South Africa
+1. Correct.
+a. Ditsong = Ditsong National Museum of Natural History (formerly called the Transvaal Museum), Pretoria, South Africa
+b. Durban = Durban Natural Science Museum, Durban, South Africa
+c. Naturalis = Naturalis Biodiversity Center, Leiden, Netherlands (sometimes abbreviated RMNH)
+d. NHMUK = Natural History Museum, Tring, UK (formerly abbreviated BMNH or BM(NH))
+e. NMSE = National Museums of Scotland, Edinburgh, UK (formerly Royal Scottish Museum)
+f. Peter Ryan = data from Peter Ryan, Percy FitzPatrick Institute of African Ornithology, University of Cape Town, Cape Town, South Africa
+g. RSPB = data from the Royal Society for the Protection of Birds (i.e., me)
+h. UCT-RSPB = data jointly owned by Peter Ryan (UCT) and me (RSPB)
+i. WFVZ = Western Foundation for Vertebrate Zoology, Camarillo, California, USA
+j. Williams 1980 = data from Williams AJ (1980) Rockhopper Penguins Eudyptes chrysocome at Gough Island. Bull Br Ornithol Club 100:208-212. This is simulated from a normal distribution given his means, SD, and sample size in the paper.
+k. ZMUO = Zoological Museum, University of Oslo, Oslo, Norway
 
-b.       Durban = Durban Natural Science Museum, Durban, South Africa
+2. Could you please clarify the Reference column? It seems to be an amalgam of who measured it, papers the data came from, harvested vs. known clutches (what does this mean?), and indicators for simulation. How should we interpret missing cells in the Reference column? 
 
-c.       Naturalis = Naturalis Biodiversity Center, Leiden, Netherlands (sometimes abbreviated RMNH)
+2. Probably not the best column name, I admit. Should probably be better called “Notes”. In known clutches, we know for sure which was the A and which was the B egg; for harvested clutches, we don’t know so need to estimate it based on the discriminant function. Missing cells simply mean I had no notes for those data.
 
-d.       NHMUK = Natural History Museum, Tring, UK (formerly abbreviated BMNH or BM(NH))
+3. Who did the measurements? In Bond et al. 2016, it says the same individual did the all the measurements for that paper. Some of the samples here have who measured it in the Reference column, but many do not. Do you have that missing information?
 
-e.       NMSE = National Museums of Scotland, Edinburgh, UK (formerly Royal Scottish Museum)
+3. The person who did the measurements is either listed in the Notes (“Reference”) column, or they were taken by a number of field workers. I measured the eggs at NHMUK and NMSE, and the same person measured the eggs on Tristan, Alex, and Nightingale in 2014 (Greg McClelland). Peter Ryan measured the eggs with which he is associated. The UCT-RSPB eggs were measured by a variety of field workers and I do not have those data.
 
-f.        Peter Ryan = data from Peter Ryan, Percy FitzPatrick Institute of African Ornithology, University of Cape Town, Cape Town, South Africa
+4. In the publication data tab, there are many new fields for egg measurements. Could you please explain how those were measured?
 
-g.       RSPB = data from the Royal Society for the Protection of Birds (i.e., me)
+4. Those were derived from Altunas & Sekeroglu 2008 (attached).
 
-h.       UCT-RSPB = data jointly owned by Peter Ryan (UCT) and me (RSPB)
+5. Is there any way to connect the Publication tab with the main data tab (i.e. by a sampleID or other code)? Or are these other measurements already known to not be important?
 
-i.         WFVZ = Western Foundation for Vertebrate Zoology, Camarillo, California, USA
+5. No, but the Publication Data tab was just my attempt to clean the data from the main data tab so it was something easily summarized. Feel free to discard it & start over. Note that there are often a number of “runt” or “oddball” eggs that should be excluded from the analysis
 
-j.         Williams 1980 = data from Williams AJ (1980) Rockhopper Penguins Eudyptes chrysocome at Gough Island. Bull Br Ornithol Club 100:208-212. This is simulated from a normal distribution given his means, SD, and sample size in the paper (attached)
+6. Does a lack of the specimen ID indicate anything? 
 
-k.       ZMUO = Zoological Museum, University of Oslo, Oslo, Norway
+6. Just that the specimen ID wasn’t given in the reference (see Roberts & Kirby 1948, attached). I assigned arbitrary sequential sample IDs to non-museum data, so one could do so for Durban as well.
 
-2.       Probably not the best column name, I admit. Should probably be better called ?Notes?. In known clutches, we know for sure which was the A and which was the B egg; for harvested clutches, we don?t know so need to estimate it based on the discriminant function. Missing cells simply mean I had no notes for those data.
+8. Could you give us a little history on the who has been working on this dataset and what was the reason for starting it?
 
-3.       The person who did the measurements is either listed in the Notes (?Reference?) column, or they were taken by a number of field workers. I measured the eggs at NHMUK and NMSE, and the same person measured the eggs on Tristan, Alex, and Nightingale in 2014 (Greg McClelland). Peter Ryan measured the eggs with which he is associated. The UCT-RSPB eggs were measured by a variety of field workers and I do not have those data.
-
-4.       Those were derived from Altunas & Sekeroglu 2008 (attached).
-
-5.       No, but the Publication Data tab was just my attempt to clean the data from the main data tab so it was something easily summarized. Feel free to discard it & start over. Note that there are often a number of ?runt? or ?oddball? eggs that should be excluded from the analysis
-
-6.       Just that the specimen ID wasn?t given in the reference (see Roberts & Kirby 1948, attached). I assigned arbitrary sequential sample IDs to non-museum data, so one could do so for Durban as well.
-
-7.       That would be great, and I imagine the data would need to be up anyway for when we submit a paper. Probably best to post a cleaned version (or whatever we decide to use in the analysis)
-
-8.       This was something that I started working on in 2014, as a companion piece to a similar project on egg size. We also had the opportunity to get a large number of eggs measured on Tristan, Alex, and Nightingale, and Gough that year, so it seemed like a good opportunity. The rest of the data I either tracked down from published sources, or visited museum collections (or asked the curators to provide the data).
-
- 
-
-Answers about authorship
+8. This was something that I started working on in 2014, as a companion piece to a similar project on egg size. We also had the opportunity to get a large number of eggs measured on Tristan, Alex, and Nightingale, and Gough that year, so it seemed like a good opportunity. The rest of the data I either tracked down from published sources, or visited museum collections (or asked the curators to provide the data).
 
 There are three others who were involved in data collection and generating the ideas:
+1. Dr Greg McClelland, who was with the RSPB & Tristan da Cunha Conservation Department
+2. Trevor Glass, Head of the Tristan da Cunha Conservation Department
+3. Dr Peter Ryan, Percy FitzPatrick Institute of African Ornithology, University of Cape Town
 
-·         Dr Greg McClelland, who was with the RSPB & Tristan da Cunha Conservation Department
 
-·         Trevor Glass, Head of the Tristan da Cunha Conservation Department
+On Tue, Jan 17, 2017 at 5:31 AM, Alex Bond wrote:
 
-·         Dr Peter Ryan, Percy FitzPatrick Institute of African Ornithology, University of Cape Town
-
- ---------------
-
-On Tue, Jan 17, 2017 at 5:31 AM, Bond, Alex <Alex.Bond@rspb.org.uk> wrote:
-
-    Hello aspiring penguinologists! Lovely to meet you, and thrilled that we?ll be working together.
-
-     
-
-    I?ve attached a spreadsheet with the relevant data, which should be fairly straightforward. For each museum collection or data source, there?s a unique ID, a date, location, and measurements. Northern rockhoppers lay 2 eggs ? the first is called A, and the second, B. Obviously for museums, we don?t know the laying order, so these are marked as ?U?nknowns. Note that there are a few ?oddballs? ? obvious outliers that were collected because they looked weird.
-
-     
-
-    Also attached is our discriminant function for predicting laying order from measurements. We can hopefully use this to classify these unknowns as either A or B.
-
-     
-
-    And a bit about the islands ? Tristan da Cunha is in the South Atlantic, 2800 km from land (!!). It comprises 4 main islands: Tristan, Inaccessible, Nightingale (with nearby Alex/Middle and Stoltenhoff), and then Gough Island 400 km south. The subtropical front (a major oceanographic feature) goes between the 3 northern islands and Gough, so that might be an interesting variable to consider.
-
-     
-
-    I?m based in the UK, so 5 hours ahead of Michigan, but happy to arrange a skype/phone call to chat things through if anyone wants.
-
-     
-
-    Any questions, feel free to drop me a line!
-
-     
-
-    Cheers,
-
-    Alex
-
-     
-
-    PS: I?ve also included a short book chapter on the species that has lots of background info.
+Hello aspiring penguinologists! Lovely to meet you, and thrilled that we’ll be working together.
+ 
+I’ve attached a spreadsheet with the relevant data, which should be fairly straightforward. For each museum collection or data source, there’s a unique ID, a date, location, and measurements. Northern rockhoppers lay 2 eggs – the first is called A, and the second, B. Obviously for museums, we don’t know the laying order, so these are marked as “U”nknowns. Note that there are a few “oddballs” – obvious outliers that were collected because they looked weird.
+ 
+Also attached is our discriminant function for predicting laying order from measurements. We can hopefully use this to classify these unknowns as either A or B.
+ 
+And a bit about the islands – Tristan da Cunha is in the South Atlantic, 2800 km from land (!!). It comprises 4 main islands: Tristan, Inaccessible, Nightingale (with nearby Alex/Middle and Stoltenhoff), and then Gough Island 400 km south. The subtropical front (a major oceanographic feature) goes between the 3 northern islands and Gough, so that might be an interesting variable to consider.
+ 
+I’m based in the UK, so 5 hours ahead of Michigan, but happy to arrange a skype/phone call to chat things through if anyone wants.
+ 
+Any questions, feel free to drop me a line!
+ 
+Cheers,
+Alex
