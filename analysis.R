@@ -29,17 +29,17 @@ assignOrder <- function(length, breadth, cutoff = 0.66){
   #d <- length*0.73 + breadth*0.50 - 72.39
   
   ####From results, with signs switched
-  d <- -length*0.73 - breadth*0.50 + 72.39
+  #d <- -length*0.73 - breadth*0.50 + 72.39
   
   ####From the abstract
-  #d <- length*0.58 + breadth*0.39 - 57.48
-  probA <- 1/(1+exp(-d))
+  d <- length*0.58 + breadth*0.39 - 57.48
+  probB <- 1/(1+exp(-d))
   
   ###Discriminate
-  if(probA > cutoff){
-    return('A')
-  }else if(probA < (1-cutoff)){
+  if(probB > cutoff){
     return('B')
+  }else if(probB < (1-cutoff)){
+    return('A')
   }else{return('U')}
 }
 ##################################################################
@@ -84,7 +84,7 @@ eggSizeAssigned[eggSizeAssigned$EggOrder == 'U',]$EggOrder <- mapply(FUN = assig
 
 ########################CLassify Oddballs#########################
 ##CHANGE CUTOFF HERE
-oddballCutoff <- 4
+oddballCutoff <- 3.5
 ##
 
 eggSizeCleaned <- classifyOddballs(eggSizeAssigned, oddballCutoff)
@@ -102,4 +102,7 @@ boxplot(eggSizePub$length ~ eggSizePub$predEggOrder, main = 'Bond et al.')
 boxplot(eggSizeCleaned$Length ~ eggSizeCleaned$EggOrder, main = 'Us')
 plot(eggSizePub$predEggOrder, main = 'Bond et al.')
 plot(eggSizeCleaned$EggOrder, main = 'Us')
+
+summary(eggSizePub$predEggOrder)
+summary(eggSizeCleaned$EggOrder)
 ##################################################################
