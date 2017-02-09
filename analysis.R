@@ -44,13 +44,50 @@ assignOrder <- function(length, breadth, cutoff = 0.66){
 }
 ##################################################################
 
+###########Define function for classifying oddballs###############
+classifyOddballs <- function(eggdat, sdcutoff = 4){
+  ###Identify means and sd's of breadth and length
+  sdlength <- sd(eggdat$Length)
+  sdbreadth <- sd(eggdat$Breadth)
+  meanlength <- mean(eggdat$Length)
+  meanbreadth <- mean(eggdat$Breadth)
+  
+  ##Classify abnormal eggs based on length and breadth
+  ##based on supplied cutoff
+  lengthAbnormal <- abs(eggdat$Length - meanlength)/sdlength > sdcutoff
+  breadthAbnormal <- abs(eggdat$Breadth - meanbreadth)/sdbreadth > sdcutoff
+  
+  ##Change EggOrder to ODDBALL for eggs that are EITHER abnormal in length
+  ##or abnormal in breadth
+  eggdat$EggOrder <- as.character(eggdat$EggOrder)
+  eggdat[lengthAbnormal | breadthAbnormal,'EggOrder'] <- 'ODDBALL'
+  eggdat$EggOrder <- as.factor(eggdat$EggOrder)
+  
+  return(eggdat)
+}
+##################################################################
+
+
 
 ######################Apply discriminant function#################
 eggSizeAssigned <- rawEggSize
+
+##CHANGE CUTOFF HERE
+AccuracyCutoff = 0.66
+##
+
 eggSizeAssigned[eggSizeAssigned$EggOrder == 'U',]$EggOrder <- mapply(FUN = assignOrder, 
                                                                      filter(eggSizeAssigned, EggOrder == 'U')$Length, 
                                                                      filter(eggSizeAssigned, EggOrder == 'U')$Breadth, 
-                                                                     0.66)
+                                                                     AccuracyCutoff)
+##################################################################
+
+########################CLassify Oddballs#########################
+##CHANGE CUTOFF HERE
+oddballCutoff <- 4
+##
+
+eggSizeCleaned <- classifyOddballs(eggSizeAssigned, oddballCutoff)
 ##################################################################
 
 
@@ -62,7 +99,7 @@ eggSizeAssigned[eggSizeAssigned$EggOrder == 'U',]$EggOrder <- mapply(FUN = assig
 eggSizePub <- read.csv('NRPE_eggSize.csv')
 par(mfrow = c(2,1))
 boxplot(eggSizePub$length ~ eggSizePub$predEggOrder, main = 'Bond et al.')
-boxplot(eggSizeAssigned$Length ~ eggSizeAssigned$EggOrder, main = 'Us')
+boxplot(eggSizeCleaned$Length ~ eggSizeCleaned$EggOrder, main = 'Us')
 plot(eggSizePub$predEggOrder, main = 'Bond et al.')
-plot(eggSizeAssigned$EggOrder, main = 'Us')
+plot(eggSizeCleaned$EggOrder, main = 'Us')
 ##################################################################
