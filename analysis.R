@@ -23,10 +23,15 @@ names(rawEggSize) <- c('Source', 'SpecimenID', 'Location', 'Day',
 ##'D = 0.58*Length + 0.39*Breadth - 57.48
 ##'D = 0.73*Length + 0.50*Breadth - 72.39
 
-assignOrder <- function(length, breadth, cutoff){
+assignOrder <- function(length, breadth, cutoff = 0.66){
   ##discriminant function
+  ####From results
   #d <- length*0.73 + breadth*0.50 - 72.39
+  
+  ####From results, with signs switched
   d <- -length*0.73 - breadth*0.50 + 72.39
+  
+  ####From the abstract
   #d <- length*0.58 + breadth*0.39 - 57.48
   probA <- 1/(1+exp(-d))
   
@@ -53,7 +58,7 @@ eggSizeAssigned[eggSizeAssigned$EggOrder == 'U',]$EggOrder <- mapply(FUN = assig
 ##'The discriminant function above should have reproduced
 ##'the assignment procedure in Bond et al. The plots below
 ##'suggest that it has done so, with the exception of 
-##'ODDBALLS, which we haven't classified yet in this analysis
+##'ODDBALLS, which we haven't been classified yet in this analysis
 eggSizePub <- read.csv('NRPE_eggSize.csv')
 par(mfrow = c(2,1))
 boxplot(eggSizePub$length ~ eggSizePub$predEggOrder, main = 'Bond et al.')
