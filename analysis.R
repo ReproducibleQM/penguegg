@@ -106,3 +106,65 @@ plot(eggSizeCleaned$EggOrder, main = 'Us')
 summary(eggSizePub$predEggOrder)
 summary(eggSizeCleaned$EggOrder)
 ##################################################################
+
+
+##################Some basic descriptive plots####################
+boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'B',], Volume ~ Year, main = 'B Eggs')
+boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Year, main = 'A Eggs')
+
+boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'B',], Volume ~ Month, main = 'B Eggs')
+boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Month, main = 'A Eggs')
+##################################################################
+#eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder != 'ODDBALL')
+eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder %in% c('A', 'B'))
+eggSizeNoOdd <- eggSizeNoOdd[complete.cases(eggSizeNoOdd),]
+m0 <- lm(Volume ~ EggOrder, data = eggSizeNoOdd)
+
+
+########################Volume ~ Month############################
+summary(lm(Volume ~ Month, data = eggSizeNoOdd))
+m1 <- lm(Volume ~ Month, data = eggSizeNoOdd)
+##without high leverage data point
+summary(lm(Volume ~ Month, data = eggSizeNoOdd[-936,]))
+
+##split by Egg Order
+summary(lm(Volume ~ Month, data = filter(eggSizeNoOdd, EggOrder == 'B'))) ## p = .00105
+summary(lm(Volume ~ Month, data = filter(eggSizeNoOdd, EggOrder == 'A'))) ##n.s
+##################################################################
+
+
+########################Volume ~ Year#############################
+m2 <- lm(Volume ~ Year, data = eggSizeNoOdd)
+boxplot(data = eggSizeNoOdd, Volume ~ Year)
+
+##Split by egg order
+summary(lm(Volume ~ Year, data = filter(eggSizeNoOdd, EggOrder == 'B'))) ##n.s
+summary(lm(Volume ~ Year, data = filter(eggSizeNoOdd, EggOrder == 'A'))) ##p = .00699
+##################################################################
+
+
+######################Volume ~ Location###########################
+m3 <- lm(Volume ~ Location, data = eggSizeNoOdd)
+boxplot(Volume ~ Location, eggSizeNoOdd)
+summary(lm(Volume ~  Location, data = filter(eggSizeNoOdd, EggOrder == 'B')))
+summary(lm(Volume ~  Location, data = filter(eggSizeNoOdd, EggOrder == 'A')))
+##################################################################
+
+######################Multiple Regression#########################
+m4 <- lm(Volume ~ EggOrder + Month, data = eggSizeNoOdd)
+m5 <- lm(Volume ~ EggOrder * Month, data = eggSizeNoOdd)
+m6 <- lm(Volume ~ EggOrder + Year, data = eggSizeNoOdd)
+m7 <- lm(Volume ~ EggOrder * Year, data = eggSizeNoOdd)
+m8 <- lm(Volume ~ EggOrder + Location, data = eggSizeNoOdd)
+m9 <- lm(Volume ~ EggOrder * Location, data = eggSizeNoOdd)
+m10 <- lm(Volume ~ EggOrder * Month + Location, data = eggSizeNoOdd)
+m11 <- lm(Volume ~ EggOrder * Year + Location, data = eggSizeNoOdd)
+m12 <- lm(Volume ~ EggOrder + Location + Year, data = eggSizeNoOdd)
+m13 <- lm(Volume ~ EggOrder + Location + Year + Month, data = eggSizeNoOdd)
+m14 <- lm(Volume ~ EggOrder*Month + Location + Year*EggOrder, data = eggSizeNoOdd)
+##################################################################
+
+########################Model comparison##########################
+aic <- AIC(m0, m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14)
+aic[order(aic$AIC),]
+##################################################################
