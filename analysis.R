@@ -5,6 +5,8 @@
 ##################################################################
 
 library(dplyr)
+library(ggplot2)
+library(geosphere)
 
 #########################import data##############################
 rawEggSize <- read.csv("NRPE_eggSize_raw.csv")
@@ -145,9 +147,12 @@ summary(lm(Volume ~ Year, data = filter(eggSizeNoOdd, EggOrder == 'A'))) ##p = .
 
 ######################Volume ~ Location###########################
 m3 <- lm(Volume ~ Location, data = eggSizeNoOdd)
-boxplot(Volume ~ Location, eggSizeNoOdd)
+boxplot(Volume ~ Location, eggSizeNoOdd[eggSizeNoOdd$EggOrder == 'A',], main = 'A')
+boxplot(Volume ~ Location, eggSizeNoOdd[eggSizeNoOdd$EggOrder == 'B',], main = 'B')
 summary(lm(Volume ~  Location, data = filter(eggSizeNoOdd, EggOrder == 'B')))
 summary(lm(Volume ~  Location, data = filter(eggSizeNoOdd, EggOrder == 'A')))
+
+ggplot()
 ##################################################################
 
 ######################Multiple Regression#########################
@@ -168,3 +173,55 @@ m14 <- lm(Volume ~ EggOrder*Month + Location + Year*EggOrder, data = eggSizeNoOd
 aic <- AIC(m0, m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14)
 aic[order(aic$AIC),]
 ##################################################################
+
+
+########################Read in environmental data################
+edatS <- read.fwf('Environmental Data1800/MSG2.S.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
+names(edatS) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
+edatS[edatS$HT == -9999,'HT'] <- NA 
+
+edatP <- read.fwf('Environmental Data1800/MSG2.P.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
+names(edatP) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
+edatP[edatP$HT == -9999,'HT'] <- NA 
+##################################################################
+
+
+####################Calculate distances to islands################
+###Coordinates of the center of the Tristan da Cunha island cluster
+tristanLat <- -37.26
+tristanLon <- -12.47
+
+goughLat <- -40.31
+goughLon <- -9.93
+
+edatP$Lon <- edatP$BLO + edatP$X
+edatP$Lat <- edatP$BLA + edatP$Y
+edatP[edatP$Lon > 180,'Lon'] <- edatP[edatP$Lon > 180,'Lon'] - 360
+
+
+edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))
+edatP$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatP[,c('Lon', 'Lat')]))
+
+
+
+edatS$Lon <- edatS$BLO + edatS$X
+edatS$Lat <- edatS$BLA + edatS$Y
+edatS[edatS$Lon > 180,'Lon'] <- edatS[edatS$Lon > 180,'Lon'] - 360
+
+
+edatS$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatS[,c('Lon', 'Lat')]))
+edatS$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatS[,c('Lon', 'Lat')]))
+
+plot(mapply(c, edatP[,c('Lon', 'Lat')]))
+text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', 'G'), col = 'red')
+
+##'Potential bin categories
+##'0-250
+##'0-500
+##'0-1000
+##'0-2000
+##################################################################
+
+
+
+

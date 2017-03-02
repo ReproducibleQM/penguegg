@@ -1,0 +1,88 @@
+---------------------------------------------------
+   ICOADS MSG Subset Data Summary
+---------------------------------------------------
+
+File naming conventions
+-----------------------
+MSGresol.variable.stattype.startdate.enddate_nn.comp
+
+ resol     - MSG data resolution
+ variable  - variable identifier, see Table 1a in document file "msg"
+ stattype  - statistic type, either standard (std) or enhanced (enh),
+             see file "R2.5-stat_doc.pdf" for more information on std and enh
+ startdate - starting date, yyyymm
+ enddate   - ending date, yyyymm
+ nn        - file sequence number, nn = 1,2,....
+             {nn = 2 and larger will only exist for large data requests.
+              Time increases monotonically in file nn = 1, 2, 3, etc.}
+ comp      - data file compression suffix, Z = Unix compress, .gz = GNU Zip,
+             no suffix means no compression.
+
+
+File Content
+------------        
+Each subset data file contains only one variable and begins with two header lines.  An example is:
+----------------------------------------------------------------------------------------------------------------
+Variable name : S , description : sea surface temperature              0.01 @C, format(i5,2i4,2f7.1,i5,10f8.2)
+ YEAR MON BSZ    BLO    BLA PID2      S1      S3      S5       M       N       S       D      HT       X       Y 
+----------------------------------------------------------------------------------------------------------------
+
+The first line identifies the variable (S in this case), the precision and units, 
+and Fortran format. The second line  shows data column labels. Other variables 
+and statistic definition are found in the document file "msg" in Tables 1a and 1b.
+
+Lines three through the end of file are data records.  An example is:
+                                                           
+ 1960   1   2  310.0  -26.0    1   26.70   26.70   26.70   26.70    1.00    0.00   14.00    0.00    1.80    0.40
+ 1960   1   2  312.0  -26.0    1   25.05   25.60   26.20   25.64   23.00    0.87   16.00    0.30    1.20    0.80
+ 1960   1   2  314.0  -26.0    1   23.28   24.50   24.84   24.30    7.00    0.95   16.00    0.30    0.60    1.60
+ 1960   1   2  316.0  -26.0    1   25.62   26.10   26.58   26.08   11.00    0.44   16.00    0.50    1.00    1.00
+
+Things to NOTE:
+
+   1) Only boxes that have observations will have data records.  NO
+      interpolation is done to fill in temporal or spatial data gaps.
+
+   2) Reference longitude and latitude (BLO, BLA) refer to the south
+      west corner of the 2x2 or 1x1 box.  Longitude is always measured
+      in east (E) coordinates, i.e. (0-360).
+
+   3) The mean location of the observations within the box is determined
+      by, mean longitude = BLO + X, mean latitude = BLA + Y.
+
+
+Supporting documentation files
+------------------------------
+R2.5-stat_doc.pdf - general description of various COADS statistic products,
+                    resolutions, and available time periods
+
+msg               - specific description of the MSG data product
+
+
+Variables Selected
+------------------
+See document file 'msg' for details.
+
+Variable name : S , description : sea surface temperature              0.01 @C, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : A , description : air temperature                      0.01 @C, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : Q , description : specific humidity                  0.01 g/kg, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : R , description : relative humidity                      0.1 %, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : W , description : scalar wind                         0.01 m/s, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : P , description : sea level pressure                  0.01 hPa, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : C , description : total cloudiness                    0.1 okta, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : D , description : S - A = sea-air temp. diff.          0.01 @C, format(i5,2i4,2f7.1,i5,10f8.2)
+Variable name : G , description : FW = (QS - Q)W = (evap. param.) 0.1 g/kg m/s, format(i5,2i4,2f7.1,i5,10f8.2)
+
+ Subsetting Summary
+ ------------------
+ user name                :  Connie Rojas<connierojas@live.com>
+ latitude limits(+N,-S)   :   -51.00  -21.00
+ longitude limits(+E only):   318.00   15.00
+ date limits(yyyymm)      :  180001.201412
+ data resolution          :  2
+ statistic type           :  enh
+ records input            :  8344923(S), 8344923(A), 8236335(W), 8236335(P), 8344923(Q), 8090260(C), 7436989(D), 8344923(R), 7436989(G)
+ records output           :  359891(S), 366247(A), 366145(W), 355778(P), 187586(Q), 344176(C), 330504(D), 190934(R), 176116(G)
+ size input               :  4660.262 MB
+ size output              :  302.546 MB
+
