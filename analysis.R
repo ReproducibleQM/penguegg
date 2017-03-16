@@ -7,6 +7,8 @@
 library(dplyr)
 library(ggplot2)
 library(geosphere)
+library(scales)
+library(RColorBrewer)
 
 #########################import data##############################
 rawEggSize <- read.csv("NRPE_eggSize_raw.csv")
@@ -198,9 +200,15 @@ edatP$Lon <- edatP$BLO + edatP$X
 edatP$Lat <- edatP$BLA + edatP$Y
 edatP[edatP$Lon > 180,'Lon'] <- edatP[edatP$Lon > 180,'Lon'] - 360
 
+###Define bins for binning distances
+bins <- c(0, 250, 500, 1000, 2000, 100000)
 
-edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))
-edatP$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatP[,c('Lon', 'Lat')]))
+##Dist in kilometers
+edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
+edatP$distTristanBin <- cut(edatP$distTristan, breaks = bins, right = T)
+edatP$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
+edatP$distGoughBin <- cut(edatP$distGough, breaks = bins, right = T)
+
 
 
 
@@ -208,12 +216,21 @@ edatS$Lon <- edatS$BLO + edatS$X
 edatS$Lat <- edatS$BLA + edatS$Y
 edatS[edatS$Lon > 180,'Lon'] <- edatS[edatS$Lon > 180,'Lon'] - 360
 
+###distance in kilometers
+edatS$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
+edatS$distTristanBin <- cut(edatS$distTristan, breaks = bins, right = T)
+edatS$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
+edatS$distGoughBin <- cut(edatS$distGough, breaks = bins, right = T)
 
-edatS$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatS[,c('Lon', 'Lat')]))
-edatS$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatS[,c('Lon', 'Lat')]))
+colors <- brewer.pal(5, 'Mono')
+colors2 <- brewer.pal(5, 'Blues')
+#plot(mapply(c, edatP[,c('Lon', 'Lat')]), col = alpha(colors[edatP$distTristanBin], 0.3))
+#points(mapply(c, edatP[,c('Lon', 'Lat')]), col = alpha(colors[edatP$distGoughBin], 0.1))
+#text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', 'G'), col = 'white')
 
-plot(mapply(c, edatP[,c('Lon', 'Lat')]))
-text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', 'G'), col = 'red')
+ggplot(aes(x = Lon, y = Lat), data = edatP) +
+  geom_raster(alpha = 0.5, fill = colors2[edatP$distTristanBin], interpolate = T)+
+  geom_raster(aes(x = Lon, y = Lat), fill = colors[edatP$distGoughBin], alpha =0.5, data = edatP)
 
 ##'Potential bin categories
 ##'0-250
@@ -224,4 +241,13 @@ text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', '
 
 
 
+########################Models####################################
+##'SST at different ranges
+##'SSP at different ranges
+##'Volume as response variable
+##'Location
+##'Month
+##'Egg Order
+##'Year
 
+m1 <- lm(data = eggSizeNoOdd, Volume ~ Month + Location + )
