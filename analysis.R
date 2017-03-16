@@ -201,7 +201,7 @@ edatP$Lat <- edatP$BLA + edatP$Y
 edatP[edatP$Lon > 180,'Lon'] <- edatP[edatP$Lon > 180,'Lon'] - 360
 
 ###Define bins for binning distances
-bins <- c(0, 250, 500, 1000, 2000, 100000)
+bins <- c(0, 250, 500, 1000, 2100, 100000)
 
 ##Dist in kilometers
 edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
@@ -240,6 +240,44 @@ ggplot(aes(x = Lon, y = Lat), data = edatP) +
 ##################################################################
 
 
+##########################Aggregate means#########################
+
+##Timing of different lifehistory periods - Cuthbert 2013 (penguins natural history and conservation)
+IncubationMonths <- c(7,8,9,10)
+ForagingMonthsLiberal <- c(4,5,6,7)
+ForaginMonthsCore <- c(5,6)
+BroodingMonths <- c(10,11,12,1)
+
+
+
+###Foraging ranges from different lifehistory periods - from IUCN 2016 
+IncubationDistT <- 800
+IncubationDistG <- 670
+ForagingDistT <- 2100
+ForagingDistG <- 2100
+BroodingDistT <- 35
+BroodingDistG <- 24
+
+
+for(row in 1:length(eggSizeNoOdd[,1])){
+  year <- eggSizeNoOdd[row,'Year']
+  location <- ifelse(eggSizeNoOdd[row,'Location'] == 'Gough', 'G', 'T')
+  if(location == 'T'){
+    #eggSizeNoOdd[row,'IncubationMeanSST'] <- mean(filter(edatS, Mon %in% IncubationMonths, Year == year, distTristan <= IncubationDistT)$M)
+    #eggSizeNoOdd[row,'IncubationMeanSSP'] <- mean(filter(edatP, Mon %in% IncubationMonths, Year == year, distTristan <= IncubationDistT)$M)
+    eggSizeNoOdd[row,'ForagingMeanSST'] <- mean(filter(edatS, Mon %in% ForagingMonths, Year == year, distTristan <= ForagingDistT)$M)
+    eggSizeNoOdd[row,'ForagingMeanSSP'] <- mean(filter(edatP, Mon %in% ForagingMonths, Year == year, distTristan <= ForagingDistT)$M)
+  }else{
+    #eggSizeNoOdd[row,'IncubationMeanSST'] <- mean(filter(edatS, Mon %in% IncubationMonths, Year == year, distGough <= IncubationDistG)$M)
+    #eggSizeNoOdd[row,'IncubationMeanSSP'] <- mean(filter(edatP, Mon %in% IncubationMonths, Year == year, distGough <= IncubationDistG)$M)
+    eggSizeNoOdd[row,'ForagingMeanSST'] <- mean(filter(edatS, Mon %in% ForagingMonths, Year == year, distGough <= ForagingDistG)$M)
+    eggSizeNoOdd[row,'ForagingMeanSSP'] <- mean(filter(edatP, Mon %in% ForagingMonths, Year == year, distGough <= ForagingDistG)$M)
+  }
+}
+
+
+##################################################################
+
 
 ########################Models####################################
 ##'SST at different ranges
@@ -250,4 +288,4 @@ ggplot(aes(x = Lon, y = Lat), data = edatP) +
 ##'Egg Order
 ##'Year
 
-m1 <- lm(data = eggSizeNoOdd, Volume ~ Month + Location + )
+m1 <- lm(data = eggSizeNoOdd, Volume ~ Month + Location + EggOrder + Year + )
