@@ -211,6 +211,24 @@ aic.b <- aictab(list(mb1b, mb2b, mb3b, mb4b, mb5b, mb6b, mb7b, mb8b, mb9b, mb10b
 aic.b
 
 
+###Model selection for basic variables - Together
+mb1 <- lm(data = eggs, Volume ~ 1)
+mb2 <- lm(data = eggs, Volume ~ Location)
+mb3 <- lm(data = eggs, Volume ~ Year)
+mb4 <- lm(data = eggs, Volume ~ Month)
+mb5 <- lm(data = eggs, Volume ~ ConvergentZone)
+mb6 <- lm(data = eggs, Volume ~ Month + Year)
+mb7 <- lm(data = eggs, Volume ~ Month + Location)
+mb8 <- lm(data = eggs, Volume ~ Month + ConvergentZone)
+mb9 <- lm(data = eggs, Volume ~ Year + Location)
+mb10 <- lm(data = eggs, Volume ~ Year + ConvergentZone)
+mb11 <- lm(data = eggs, Volume ~ Year + ConvergentZone + Month)
+mb12 <- lm(data = eggs, Volume ~ Year + Location + Month)
+
+aic <- aictab(list(mb1, mb2, mb3, mb4, mb5, mb6, mb7, mb8, mb9, mb10, mb11, mb12))
+aic
+
+
 
 ########################Read in environmental data################
 edatS <- read.fwf('Environmental Data1800/MSG2.S.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
@@ -225,27 +243,26 @@ edatP[edatP$HT == -9999,'HT'] <- NA
 
 ####################Calculate distances to islands################
 ###Coordinates of the center of the Tristan da Cunha island cluster
+
+###Define bins for binning distances
+bins <- c(0, 250, 500, 1000, 2100, 100000)
+
+###Island locations
 tristanLat <- -37.26
 tristanLon <- -12.47
-
 goughLat <- -40.31
 goughLon <- -9.93
+
 
 edatP$Lon <- edatP$BLO + edatP$X
 edatP$Lat <- edatP$BLA + edatP$Y
 edatP[edatP$Lon > 180,'Lon'] <- edatP[edatP$Lon > 180,'Lon'] - 360
 
-###Define bins for binning distances
-bins <- c(0, 250, 500, 1000, 2100, 100000)
-
 ##Dist in kilometers
 edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
-edatP$distTristanBin <- cut(edatP$distTristan, breaks = bins, right = T)
+edatP$distTristanBin <- cut(edatP$distTristan, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
 edatP$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
-edatP$distGoughBin <- cut(edatP$distGough, breaks = bins, right = T)
-
-
-
+edatP$distGoughBin <- cut(edatP$distGough, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
 
 edatS$Lon <- edatS$BLO + edatS$X
 edatS$Lat <- edatS$BLA + edatS$Y
@@ -253,9 +270,9 @@ edatS[edatS$Lon > 180,'Lon'] <- edatS[edatS$Lon > 180,'Lon'] - 360
 
 ###distance in kilometers
 edatS$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
-edatS$distTristanBin <- cut(edatS$distTristan, breaks = bins, right = T)
+edatS$distTristanBin <- cut(edatS$distTristan, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
 edatS$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
-edatS$distGoughBin <- cut(edatS$distGough, breaks = bins, right = T, labels = c('bin1, bin2 '))
+edatS$distGoughBin <- cut(edatS$distGough, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
 
 colors <- brewer.pal(5, 'Mono')
 colors2 <- brewer.pal(5, 'Blues')
@@ -263,9 +280,9 @@ colors2 <- brewer.pal(5, 'Blues')
 #points(mapply(c, edatP[,c('Lon', 'Lat')]), col = alpha(colors[edatP$distGoughBin], 0.1))
 #text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', 'G'), col = 'white')
 
-ggplot(aes(x = Lon, y = Lat), data = filter(edatP) +
+ggplot(aes(x = Lon, y = Lat), data = filter(edatP, distTristanBin != 'outside_5')) +
   geom_raster(alpha = 0.5, fill = colors2[edatP$distTristanBin], interpolate = T)+
-  geom_raster(aes(x = Lon, y = Lat), fill = colors2[edatP$distGoughBin], alpha =0.5, data = edatP)
+  geom_raster(aes(x = Lon, y = Lat), fill = colors2[edatP$distGoughBin], alpha =0.5, data = filter(edatP, distGoughBin != 'outside_5'))
 
 ##'Potential bin categories
 ##'0-250
