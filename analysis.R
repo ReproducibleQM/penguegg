@@ -113,7 +113,14 @@ summary(eggSizeCleaned$EggOrder)
 ##################################################################
 
 
-##################Some basic descriptive plots####################
+
+#########Clean the data#######
+eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder %in% c('A', 'B'))
+eggSizeNoOdd <- eggSizeNoOdd[-which(eggSizeNoOdd$Month == 1),]
+##############################
+
+
+##################Some basic descriptive statistics####################
 boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'B',], Volume ~ Year, main = 'B Eggs')
 boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Year, main = 'A Eggs')
 
@@ -121,10 +128,12 @@ boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'B',], Volume ~ Month, 
 boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Month, main = 'A Eggs')
 # 
 #########################Volume ~ Month############################
-# eggSizeNoOdd <- eggSizeNoOdd[complete.cases(eggSizeNoOdd),]
-# 
-# summary(lm(Volume ~ Month, data = eggSizeNoOdd))
-# m1 <- lm(Volume ~ Month, data = eggSizeNoOdd)
+eggSizeNoOddMonth <- eggSizeNoOdd[complete.cases(eggSizeNoOdd$Month),]
+eggSizeNoOddMonth$Month <- factor(eggSizeNoOddMonth$Month, levels = c(9,10,11))
+
+m1 <- lm(Volume ~ Month, data = eggSizeNoOddMonth)
+summary(m1)
+boxplot(eggSizeNoOddMonth$Volume ~ eggSizeNoOddMonth$Month)
 # ##without high leverage data point
 # summary(lm(Volume ~ Month, data = eggSizeNoOdd[-936,]))
 # 
@@ -135,7 +144,10 @@ boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Month, 
 # 
 # 
 #########################Volume ~ Year#############################
-# m2 <- lm(Volume ~ Year, data = eggSizeNoOdd)
+eggSizeNoOddYear <- eggSizeNoOdd
+eggSizeNoOddYear$Year <- factor(eggSizeNoOddYear$Year)
+m2 <- lm(Volume ~ Year, data = eggSizeNoOddYear)
+summary(m2)
 # boxplot(data = eggSizeNoOdd, Volume ~ Year)
 # 
 # ##Split by egg order
@@ -153,7 +165,10 @@ boxplot(data = eggSizeCleaned[eggSizeCleaned$EggOrder == 'A',], Volume ~ Month, 
 ###################################################################
 ##################################################################
 #eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder != 'ODDBALL')
-eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder %in% c('A', 'B'))
+
+
+
+
 
 #################Model selection for basic variables###############
 ##'SST at different ranges
@@ -189,7 +204,6 @@ mb12a <- lm(data = eggsA, Volume ~ Year + Location + Month)
 
 aic.a <- aictab(list(mb1a, mb2a, mb3a, mb4a, mb5a, mb6a, mb7a, mb8a, mb9a, mb10a, mb11a, mb12a))
 aic.a
-
 
 
 ###Model selection for basic variables - B eggs
@@ -229,15 +243,51 @@ aic <- aictab(list(mb1, mb2, mb3, mb4, mb5, mb6, mb7, mb8, mb9, mb10, mb11, mb12
 aic
 
 
+######Model selection with full dataset (not including month)####
+eggSizeNoOdd$ConvergentZone <- ifelse(eggSizeNoOdd$Location == 'Gough', 1, 0)
 
-########################Read in environmental data################
-edatS <- read.fwf('Environmental Data1800/MSG2.S.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
-names(edatS) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
-edatS[edatS$HT == -9999,'HT'] <- NA 
+###Model selection for basic variables with no month - A eggs
+eggsA <- filter(eggSizeNoOdd, EggOrder == 'A')
+mb1a.no.month <- lm(data = eggsA, Volume ~ 1)
+mb2a.no.month <- lm(data = eggsA, Volume ~ Location)
+mb3a.no.month <- lm(data = eggsA, Volume ~ Year)
+mb4a.no.month <- lm(data = eggsA, Volume ~ ConvergentZone)
+mb5a.no.month <- lm(data = eggsA, Volume ~ Year + Location)
+mb6a.no.month <- lm(data = eggsA, Volume ~ Year + ConvergentZone)
 
-edatP <- read.fwf('Environmental Data1800/MSG2.P.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
-names(edatP) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
-edatP[edatP$HT == -9999,'HT'] <- NA 
+aic.a.no.month <- aictab(list(mb1a.no.month, mb2a.no.month, mb3a.no.month, mb4a.no.month, mb5a.no.month, mb6a.no.month),
+                         modnames = c('null', 'location', 'year','convergentZone', 'year+location', 'year+convergentZone'))
+aic.a.no.month
+
+###Model selection for basic variables with no month - B eggs
+eggsB <- filter(eggSizeNoOdd, EggOrder == 'B')
+mb1b.no.month <- lm(data = eggsB, Volume ~ 1)
+mb2b.no.month <- lm(data = eggsB, Volume ~ Location)
+mb3b.no.month <- lm(data = eggsB, Volume ~ Year)
+mb4b.no.month <- lm(data = eggsB, Volume ~ ConvergentZone)
+mb5b.no.month <- lm(data = eggsB, Volume ~ Year + Location)
+mb6b.no.month <- lm(data = eggsB, Volume ~ Year + ConvergentZone)
+
+aic.b.no.month <- aictab(list(mb1b.no.month, mb2b.no.month, mb3b.no.month, mb4b.no.month, mb5b.no.month, mb6b.no.month),
+                         modnames = c('null', 'location', 'year','convergentZone', 'year+location', 'year+convergentZone'))
+aic.b.no.month
+
+
+
+######Modeling egg size with environmental data####
+
+####Read in environmental data####
+edatS_full <- read.fwf('Environmental Data1800/MSG2.S.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
+names(edatS_full) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
+edatS_full[edatS_full$HT == -9999,'HT'] <- NA 
+
+edatP_full <- read.fwf('Environmental Data1800/MSG2.P.enh.180001.201412_1', widths = c(6,4,3,7,8,5,8,7,8,8,8,8,8,9,8,8), skip = 2, head = F)
+names(edatP_full) <- c('Year', 'Mon', 'BSZ', 'BLO', 'BLA', 'PID2', 'S1', 'S3', 'S5', 'M','N','S','D','HT', 'X', 'Y')
+edatP_full[edatP_full$HT == -9999,'HT'] <- NA 
+
+##Trim data to reduce subsetting runtimes
+edatS <- filter(edatS_full, Year %in% unique(eggSizeNoOdd$Year))
+edatP <- filter(edatP_full, Year %in% unique(eggSizeNoOdd$Year))
 ##################################################################
 
 
@@ -246,6 +296,7 @@ edatP[edatP$HT == -9999,'HT'] <- NA
 
 ###Define bins for binning distances
 bins <- c(0, 250, 500, 1000, 2100, 100000)
+bin_names <- c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5')
 
 ###Island locations
 tristanLat <- -37.26
@@ -260,9 +311,9 @@ edatP[edatP$Lon > 180,'Lon'] <- edatP[edatP$Lon > 180,'Lon'] - 360
 
 ##Dist in kilometers
 edatP$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
-edatP$distTristanBin <- cut(edatP$distTristan, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
+edatP$distTristanBin <- cut(edatP$distTristan, breaks = bins, right = T, labels = bin_names)
 edatP$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatP[,c('Lon', 'Lat')]))/1000
-edatP$distGoughBin <- cut(edatP$distGough, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
+edatP$distGoughBin <- cut(edatP$distGough, breaks = bins, right = T, labels = bin_names)
 
 edatS$Lon <- edatS$BLO + edatS$X
 edatS$Lat <- edatS$BLA + edatS$Y
@@ -270,9 +321,9 @@ edatS[edatS$Lon > 180,'Lon'] <- edatS[edatS$Lon > 180,'Lon'] - 360
 
 ###distance in kilometers
 edatS$distTristan <- distGeo(c(tristanLon, tristanLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
-edatS$distTristanBin <- cut(edatS$distTristan, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
+edatS$distTristanBin <- cut(edatS$distTristan, breaks = bins, right = T, labels = bin_names)
 edatS$distGough <- distGeo(c(goughLon, goughLat), mapply(c, edatS[,c('Lon', 'Lat')]))/1000
-edatS$distGoughBin <- cut(edatS$distGough, breaks = bins, right = T, labels = c('inner_1', 'med_2', 'med_3', 'outer_4', 'outside_5'))
+edatS$distGoughBin <- cut(edatS$distGough, breaks = bins, right = T, labels = bin_names)
 
 colors <- brewer.pal(5, 'Mono')
 colors2 <- brewer.pal(5, 'Blues')
@@ -280,9 +331,16 @@ colors2 <- brewer.pal(5, 'Blues')
 #points(mapply(c, edatP[,c('Lon', 'Lat')]), col = alpha(colors[edatP$distGoughBin], 0.1))
 #text(x = c(tristanLon, goughLon), y = c(tristanLat, goughLat), labels = c('T', 'G'), col = 'white')
 
-ggplot(aes(x = Lon, y = Lat), data = filter(edatP, distTristanBin != 'outside_5')) +
-  geom_raster(alpha = 0.5, fill = colors2[edatP$distTristanBin], interpolate = T)+
-  geom_raster(aes(x = Lon, y = Lat), fill = colors2[edatP$distGoughBin], alpha =0.5, data = filter(edatP, distGoughBin != 'outside_5'))
+edatS_T_range <- filter(edatP, distTristanBin != 'outside_5')
+edatP_G_range <- filter(edatP, distGoughBin != 'outside_5')
+ggplot(aes(x = Lon, y = Lat), data = edatP_T_range) +
+  geom_raster(alpha = 0.5, fill = colors2[edatP_T_range$distTristanBin], interpolate = T)+
+  geom_raster(aes(x = Lon, y = Lat), fill = colors2[edatP_G_range$distGoughBin], alpha =0.5, data = edatP_G_range)
+
+ggplot(aes(x = Lon, y = Lat), data = edatS_T_range) +
+  geom_raster(alpha = 0.5, fill = scale(edatS_T_range$M), interpolate = T)+
+  scale_fill_gradient2(low = 'red', high = 'blue')
+  #geom_raster(aes(x = Lon, y = Lat), fill = colors2[edatP_G_range$distGoughBin], alpha =0.5, data = edatP_G_range)
 
 ##'Potential bin categories
 ##'0-250
@@ -297,7 +355,7 @@ ggplot(aes(x = Lon, y = Lat), data = filter(edatP, distTristanBin != 'outside_5'
 ##Timing of different lifehistory periods - Cuthbert 2013 (penguins natural history and conservation)
 IncubationMonths <- c(7,8,9,10)
 ForagingMonthsLiberal <- c(4,5,6,7)
-ForaginMonthsCore <- c(5,6)
+ForagingMonthsCons <- c(5,6)
 BroodingMonths <- c(10,11,12,1)
 
 
@@ -311,26 +369,65 @@ BroodingDistT <- 35
 BroodingDistG <- 24
 
 
+###Runs REALLY slow
 for(row in 1:length(eggSizeNoOdd[,1])){
   year <- eggSizeNoOdd[row,'Year']
   location <- ifelse(eggSizeNoOdd[row,'Location'] == 'Gough', 'G', 'T')
   if(location == 'T'){
-    #eggSizeNoOdd[row,'IncubationMeanSST'] <- mean(filter(edatS, Mon %in% IncubationMonths, Year == year, distTristan <= IncubationDistT)$M)
-    #eggSizeNoOdd[row,'IncubationMeanSSP'] <- mean(filter(edatP, Mon %in% IncubationMonths, Year == year, distTristan <= IncubationDistT)$M)
-    eggSizeNoOdd[row,'ForagingMeanSST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristan <= ForagingDistT)$M)
-    eggSizeNoOdd[row,'ForagingMeanSSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristan <= ForagingDistT)$M)
-    eggSizeNoOdd[row,'ForagingMeanSST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristan <= ForagingDistT)$M)
-    eggSizeNoOdd[row,'ForagingMeanSSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristan <= ForagingDistT)$M)
+    #Liberal, SST
+    eggSizeNoOdd[row,'inner1_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'outside_5')$M, na.rm = T)
+    #Conservative, SST
+    eggSizeNoOdd[row,'inner1_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'outside_5')$M, na.rm = T)
+    #Liberal, SSP
+    eggSizeNoOdd[row,'inner1_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distTristanBin == 'outside_5')$M, na.rm = T)
+    #Conservative, SSP
+    eggSizeNoOdd[row,'inner1_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distTristanBin == 'outside_5')$M, na.rm = T)
   }else{
-    #eggSizeNoOdd[row,'IncubationMeanSST'] <- mean(filter(edatS, Mon %in% IncubationMonths, Year == year, distGough <= IncubationDistG)$M)
-    #eggSizeNoOdd[row,'IncubationMeanSSP'] <- mean(filter(edatP, Mon %in% IncubationMonths, Year == year, distGough <= IncubationDistG)$M)
-    eggSizeNoOdd[row,'ForagingMeanSST'] <- mean(filter(edatS, Mon %in% ForagingMonths, Year == year, distGough <= ForagingDistG)$M)
-    eggSizeNoOdd[row,'ForagingMeanSSP'] <- mean(filter(edatP, Mon %in% ForagingMonths, Year == year, distGough <= ForagingDistG)$M)
+    #Liberal, SST
+    eggSizeNoOdd[row,'inner1_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SST_lib'] <- mean(filter(edatS, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'outside_5')$M, na.rm = T)
+    #Conservative, SST
+    eggSizeNoOdd[row,'inner1_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SST_cons'] <- mean(filter(edatS, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'outside_5')$M, na.rm = T)
+    #Liberal, SSP
+    eggSizeNoOdd[row,'inner1_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SSP_lib'] <- mean(filter(edatP, Mon %in% ForagingMonthsLiberal, Year == year, distGoughBin == 'outside_5')$M, na.rm = T)
+    #Conservative, SSP
+    eggSizeNoOdd[row,'inner1_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'inner_1')$M, na.rm = T)
+    eggSizeNoOdd[row,'med2_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'med_2')$M, na.rm = T)
+    eggSizeNoOdd[row,'med3_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'med_3')$M, na.rm = T)
+    eggSizeNoOdd[row,'outer4_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'outer_4')$M, na.rm = T)
+    eggSizeNoOdd[row,'outside5_SSP_cons'] <- mean(filter(edatP, Mon %in% ForagingMonthsCons, Year == year, distGoughBin == 'outside_5')$M, na.rm = T)
   }
 }
 
-
-##################################################################
+complete.cases(eggSizeNoOdd[,12:length(eggSizeNoOdd)])
+#####################################################################
 
 
 
