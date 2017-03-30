@@ -145,10 +145,10 @@ boxplot(eggSizeNoOddMonth$Volume ~ eggSizeNoOddMonth$Month)
 # 
 #########################Volume ~ Year#############################
 eggSizeNoOddYear <- eggSizeNoOdd
-eggSizeNoOddYear$Year <- factor(eggSizeNoOddYear$Year)
+eggSizeNoOddYear$Year <- factor(eggSizeNoOddYear$Year, levels = paste(unique(eggSizeNoOddYear$Year)[order(unique(eggSizeNoOddYear$Year), decreasing = T)], sep = ','))
 m2 <- lm(Volume ~ Year, data = eggSizeNoOddYear)
 summary(m2)
-# boxplot(data = eggSizeNoOdd, Volume ~ Year)
+boxplot(data = eggSizeNoOddYear, Volume ~ Year)
 # 
 # ##Split by egg order
 # summary(lm(Volume ~ Year, data = filter(eggSizeNoOdd, EggOrder == 'B'))) ##n.s
@@ -430,7 +430,85 @@ complete.cases(eggSizeNoOdd[,12:length(eggSizeNoOdd)])
 #####################################################################
 
 
+#####Ecological models of A eggs. Each model is ecological variable + convergentZone#####
+eggSizeNoOdd_A <- filter(eggSizeNoOdd, EggOrder == 'A')
+#temperature
+mA.inner1_sst_cons <- lm(data = eggSizeNoOdd_A, Volume ~ inner1_SST_cons + ConvergentZone)
+mA.med2_sst_cons <- lm(data = eggSizeNoOdd_A, Volume ~ med2_SST_cons + ConvergentZone)
+mA.med3_sst_cons <- lm(data = eggSizeNoOdd_A, Volume ~ med3_SST_cons + ConvergentZone)
+mA.outer4_sst_cons <- lm(data = eggSizeNoOdd_A, Volume ~ outer4_SST_cons + ConvergentZone)
+mA.outside5_sst_cons <- lm(data = eggSizeNoOdd_A, Volume ~ outside5_SST_cons + ConvergentZone)
+
+mA.inner1_sst_lib <- lm(data = eggSizeNoOdd_A, Volume ~ inner1_SST_lib + ConvergentZone)
+mA.med2_sst_lib <- lm(data = eggSizeNoOdd_A, Volume ~ med2_SST_lib + ConvergentZone)
+mA.med3_sst_lib <- lm(data = eggSizeNoOdd_A, Volume ~ med3_SST_lib + ConvergentZone)
+mA.outer4_sst_lib <- lm(data = eggSizeNoOdd_A, Volume ~ outer4_SST_lib + ConvergentZone)
+mA.outside5_sst_lib <- lm(data = eggSizeNoOdd_A, Volume ~ outside5_SST_lib + ConvergentZone)
+
+#pressure
+mA.inner1_ssp_cons <- lm(data = eggSizeNoOdd_A, Volume ~ inner1_SSP_cons + ConvergentZone)
+mA.med2_ssp_cons <- lm(data = eggSizeNoOdd_A, Volume ~ med2_SSP_cons + ConvergentZone)
+mA.med3_ssp_cons <- lm(data = eggSizeNoOdd_A, Volume ~ med3_SSP_cons + ConvergentZone)
+mA.outer4_ssp_cons <- lm(data = eggSizeNoOdd_A, Volume ~ outer4_SSP_cons + ConvergentZone)
+mA.outside5_ssp_cons <- lm(data = eggSizeNoOdd_A, Volume ~ outside5_SSP_cons + ConvergentZone)
+
+mA.inner1_ssp_lib <- lm(data = eggSizeNoOdd_A, Volume ~ inner1_SSP_lib + ConvergentZone)
+mA.med2_ssp_lib <- lm(data = eggSizeNoOdd_A, Volume ~ med2_SSP_lib + ConvergentZone)
+mA.med3_ssp_lib <- lm(data = eggSizeNoOdd_A, Volume ~ med3_SSP_lib + ConvergentZone)
+mA.outer4_ssp_lib <- lm(data = eggSizeNoOdd_A, Volume ~ outer4_SSP_lib + ConvergentZone)
+mA.outside5_ssp_lib <- lm(data = eggSizeNoOdd_A, Volume ~ outside5_SSP_lib + ConvergentZone)
 
 
 
+##model comparison
+A.ecol.aic <- aictab(list(mA.inner1_sst_cons,mA.med2_sst_cons,mA.med3_sst_cons,mA.outer4_sst_cons,mA.outside5_sst_cons,
+                          mA.inner1_sst_lib,mA.med2_sst_lib,mA.med3_sst_lib,mA.outer4_sst_lib,mA.outside5_sst_lib,
+                          mA.inner1_ssp_cons,mA.med2_ssp_cons,mA.med3_ssp_cons,mA.outer4_ssp_cons,mA.outside5_ssp_cons,
+                          mA.inner1_ssp_lib,mA.med2_ssp_lib,mA.med3_ssp_lib,mA.outer4_ssp_lib,mA.outside5_ssp_lib),
+                     modnames = c('inner1_sst_cons','med2_sst_cons','med3_sst_cons','outer4_sst_cons','outside5_sst_cons',
+                                  'inner1_sst_lib','med2_sst_lib','med3_sst_lib','outer4_sst_lib','outside5_sst_lib',
+                                  'inner1_ssp_cons','med2_ssp_cons','med3_ssp_cons','outer4_ssp_cons','outside5_ssp_cons',
+                                  'inner1_ssp_lib','med2_ssp_lib','med3_ssp_lib','outer4_ssp_lib','outside5_ssp_lib'))
+
+
+##
+#####Ecological models of B eggs. Each model is ecological variable + convergentZone#####
+##
+eggSizeNoOdd_B <- filter(eggSizeNoOdd, EggOrder == 'B')
+
+mB.inner1_sst_cons <- lm(data = eggSizeNoOdd_B, Volume ~ inner1_SST_cons + Location)
+mB.med2_sst_cons <- lm(data = eggSizeNoOdd_B, Volume ~ med2_SST_cons + Location)
+mB.med3_sst_cons <- lm(data = eggSizeNoOdd_B, Volume ~ med3_SST_cons + Location)
+mB.outer4_sst_cons <- lm(data = eggSizeNoOdd_B, Volume ~ outer4_SST_cons + Location)
+mB.outside5_sst_cons <- lm(data = eggSizeNoOdd_B, Volume ~ outside5_SST_cons + Location)
+
+mB.inner1_sst_lib <- lm(data = eggSizeNoOdd_B, Volume ~ inner1_SST_lib + Location)
+mB.med2_sst_lib <- lm(data = eggSizeNoOdd_B, Volume ~ med2_SST_lib + Location)
+mB.med3_sst_lib <- lm(data = eggSizeNoOdd_B, Volume ~ med3_SST_lib + Location)
+mB.outer4_sst_lib <- lm(data = eggSizeNoOdd_B, Volume ~ outer4_SST_lib + Location)
+mB.outside5_sst_lib <- lm(data = eggSizeNoOdd_B, Volume ~ outside5_SST_lib + Location)
+
+#pressure
+mB.inner1_ssp_cons <- lm(data = eggSizeNoOdd_B, Volume ~ inner1_SSP_cons + Location)
+mB.med2_ssp_cons <- lm(data = eggSizeNoOdd_B, Volume ~ med2_SSP_cons + Location)
+mB.med3_ssp_cons <- lm(data = eggSizeNoOdd_B, Volume ~ med3_SSP_cons + Location)
+mB.outer4_ssp_cons <- lm(data = eggSizeNoOdd_B, Volume ~ outer4_SSP_cons + Location)
+mB.outside5_ssp_cons <- lm(data = eggSizeNoOdd_B, Volume ~ outside5_SSP_cons + Location)
+
+mB.inner1_ssp_lib <- lm(data = eggSizeNoOdd_B, Volume ~ inner1_SSP_lib + Location)
+mB.med2_ssp_lib <- lm(data = eggSizeNoOdd_B, Volume ~ med2_SSP_lib + Location)
+mB.med3_ssp_lib <- lm(data = eggSizeNoOdd_B, Volume ~ med3_SSP_lib + Location)
+mB.outer4_ssp_lib <- lm(data = eggSizeNoOdd_B, Volume ~ outer4_SSP_lib + Location)
+mB.outside5_ssp_lib <- lm(data = eggSizeNoOdd_B, Volume ~ outside5_SSP_lib + Location)
+
+
+##model comparison
+B.ecol.aic <- aictab(list(mB.inner1_sst_cons,mB.med2_sst_cons,mB.med3_sst_cons,mB.outer4_sst_cons,mB.outside5_sst_cons,
+                          mB.inner1_sst_lib,mB.med2_sst_lib,mB.med3_sst_lib,mB.outer4_sst_lib,mB.outside5_sst_lib,
+                          mB.inner1_ssp_cons,mB.med2_ssp_cons,mB.med3_ssp_cons,mB.outer4_ssp_cons,mB.outside5_ssp_cons,
+                          mB.inner1_ssp_lib,mB.med2_ssp_lib,mB.med3_ssp_lib,mB.outer4_ssp_lib,mB.outside5_ssp_lib),
+                     modnames = c('inner1_sst_cons','med2_sst_cons','med3_sst_cons','outer4_sst_cons','outside5_sst_cons',
+                                  'inner1_sst_lib','med2_sst_lib','med3_sst_lib','outer4_sst_lib','outside5_sst_lib',
+                                  'inner1_ssp_cons','med2_ssp_cons','med3_ssp_cons','outer4_ssp_cons','outside5_ssp_cons',
+                                  'inner1_ssp_lib','med2_ssp_lib','med3_ssp_lib','outer4_ssp_lib','outside5_ssp_lib'))
 
