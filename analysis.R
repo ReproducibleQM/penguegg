@@ -419,11 +419,20 @@ aictab(cand.set = list(m_tog_1, m_tog_2, m_tog_3, m_tog_4, m_tog_5, m_tog_6, m_t
                        'eggO + year + SSP', 'eggO + location + year + SST', 'eggO + location + year + SSP',
                        'eggO + cz + year + SST', 'eggO + cz + year + SSP')) 
 
+summary(m_tog_9)
+summary(m_tog_10)
+
+####Notes
+
+##Model with weighting parameter, mean and variance separately
+#reshape data to be modeling mean and variance
+#uVolume ~ Location + SST, weights = NumSubSamples
+#sdVolume ~ Location + SST, weights = NumSubSamples
+
+#Model with location, then model residuals with SST
 
 
 
-
-m.ssp <- lm(data = eggSizeNoOdd, Volume ~ SSP + EggOrder + Year + ConvergentZone)
 
 
 # # ###Runs REALLY slow
