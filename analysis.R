@@ -442,35 +442,77 @@ summary(m_tog_10)
 ######TRACY#####
 
 #Analysis within island across years
+eggSizeNoOdd$ConvergentZone <- ifelse(eggSizeNoOdd$Location == 'Gough', 1, 0)
+
 data.night <- eggSizeNoOdd %>% filter(Location == 'Nightingale')
 
 m_night_1 <- lm(data = data.night, Volume ~ EggOrder)
 m_night_2 <- lm(data = data.night, Volume ~ EggOrder + Year)
-m_night_3 <- lm(data = data.night, Volume ~ EggOrder + SST)
-m_night_4 <- lm(data = data.night, Volume ~ EggOrder + Year + SST)
+#m_night_3 <- lm(data = data.night, Volume ~ EggOrder + SST)
+#m_night_4 <- lm(data = data.night, Volume ~ EggOrder + Year + SST)
 
-aictab(list(m_night_1, m_night_2, m_night_3, m_night_4))
+aictab(list(m_night_1, m_night_2))
+summary(m_night_2)
+#Model including Year scores 2.8 better on AIC, coef for Year is 0.05 and is significant
 
 #Analysis within island across years
 data.tdc <- eggSizeNoOdd %>% filter(Location == 'Tristan')
 
 m_tdc_1 <- lm(data = data.tdc, Volume ~ EggOrder)
 m_tdc_2 <- lm(data = data.tdc, Volume ~ EggOrder + Year)
-m_tdc_3 <- lm(data = data.tdc, Volume ~ EggOrder + SST)
-m_tdc_4 <- lm(data = data.tdc, Volume ~ EggOrder + Year + SST)
+#m_tdc_3 <- lm(data = data.tdc, Volume ~ EggOrder + SST)
+#m_tdc_4 <- lm(data = data.tdc, Volume ~ EggOrder + Year + SST)
 
-aictab(list(m_tdc_1, m_tdc_2, m_tdc_3, m_tdc_4))
+aictab(list(m_tdc_1, m_tdc_2))
+summary(m_tdc_2)
+#Model without Year is better
 
 #Analysis within year across islands
 data.2014 <- eggSizeNoOdd %>% filter(Year == '2014')
 
 m_2014_1 <- lm(data = data.2014, Volume ~ EggOrder)
-m_2014_2 <- lm(data = data.2014, Volume ~ EggOrder + Location)
-m_2014_3 <- lm(data = data.2014, Volume ~ EggOrder + SST)
-m_2014_4 <- lm(data = data.2014, Volume ~ EggOrder + Location + SST)
+m_2014_2 <- lm(data = data.2014, Volume ~ EggOrder + ConvergentZone)
+m_2014_3 <- lm(data = data.2014, Volume ~ EggOrder + Location)
+#m_2014_3 <- lm(data = data.2014, Volume ~ EggOrder + SST)
+#m_2014_4 <- lm(data = data.2014, Volume ~ EggOrder + ConvergentZone + SST)
 
-aictab(list(m_2014_1, m_2014_2, m_2014_3, m_2014_4))
+aictab(list(m_2014_1, m_2014_2, m_2014_3))
+summary(m_2014_2)
+#Model including location is better than model including SCZ
 
+#Analysis with basic variables
+m_basic_1 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder)
+m_basic_2 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + Year)
+m_basic_3 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + ConvergentZone)
+m_basic_4 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + ConvergentZone + Year)
+m_basic_5 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + Location)
+m_basic_6 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + Location + Year)
+#m_basic_7 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + ConvergentZone | Location)
+#m_basic_8 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder + ConvergentZone + Year | Location)
+
+aictab(list(m_basic_1, m_basic_2, m_basic_3, m_basic_4, m_basic_5, m_basic_6))
+
+#Model with Location is best & is not distinguishable from model with Location + Year
+#Model with SCZ is next best & better without Year
+
+#Analysis with residuals
+
+#Model using residuals from ConvergentZone & Year
+m_resid_1 <- lm(data = eggSizeNoOdd, m_basic_4$residuals ~ SST) #residuals from SCZ + Year
+m_resid_2 <- lm(data = eggSizeNoOdd, m_basic_4$residuals ~ Location) #residuals from SCZ + Year
+
+aictab(list(m_resid_1, m_resid_2))
+summary(m_resid_1)
+#Model with SST is better, coef is 0.17 and is not significant
+
+#Model using residuals from ConvergentZone
+m_resid_3 <- lm(data = eggSizeNoOdd, m_basic_3$residuals ~ SST) #residuals from SCZ
+m_resid_4 <- lm(data = eggSizeNoOdd, m_basic_3$residuals ~ Year) #residuals from SCZ
+m_resid_5 <- lm(data = eggSizeNoOdd, m_basic_3$residuals ~ Location) #residuals from SCZ
+
+aictab(list(m_resid_3, m_resid_4, m_resid_5))
+summary(m_resid_3)
+#Model with SST is better, coef is 0.17 and is not significant
 
 ####Notes
 
