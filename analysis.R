@@ -167,7 +167,34 @@ boxplot(data = eggSizeNoOddYear, Volume ~ Year)
 #eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder != 'ODDBALL')
 
 
+#####################plot lines for each island#######
+plot(data = eggSizeNoOdd, Volume ~ Year)
+plot(data = eggSizeNoOdd, Volume ~ Year, type = 'n')
+colors <- c('red', 'blue', 'green', 'purple', 'orange')
+i = 0
+for(zone in unique(eggSizeNoOdd$Location)){
+  i <- i+1
+  points(data = filter(eggSizeNoOdd, Location == zone), Volume ~ Year, col = colors[i+1], pch = 16)
+  if(length(unique(filter(eggSizeNoOdd, Location == zone)$Year) > 1)){
+    coefs <- coef(lm(data = filter(eggSizeNoOdd, Location == zone), Volume ~ Year))
+    abline(coefs[1], coefs[2], col = colors[i+1])
+  }
+}
 
+p <- ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
+  geom_point() +
+  geom_smooth(method = lm)
+
+p + facet_grid(Location ~ EggOrder)
+
+
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
+  geom_point() + 
+  geom_smooth(method = lm)
+
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
+  geom_point() + 
+  geom_smooth(method = lm)
 
 
 #################Model selection for basic variables###############
@@ -392,18 +419,21 @@ for(row in 1:length(eggSizeNoOdd[,1])){
 #########################Model volume mean and variance by year#########
 
 eggSizeNoOdd %>%
-  group_by(Year, Location, EggOrder) %>% summarize(u_volume = mean(Volume, na.rm = T),
+  group_by(Year, ConvergentZone, EggOrder) %>% summarize(u_volume = mean(Volume, na.rm = T),
                                sd_volume = sd(Volume, na.rm = T),
                                num_samples = length(Volume),
                                SST = mean(SST),
-                               SSP = mean(SSP)) -> eggSizeByYear
+                               SSP = mean(SSP),
+                               ran_sst = mean(ran_sst)) -> eggSizeByYear
 
 summary(lm(data = eggSizeByYear, u_volume ~ SST + EggOrder, weights = num_samples))
-summary(lm(data = eggSizeByYear, u_volume ~ SSP + ConvergentZone + EggOrder, weights = num_samples))
-summary(lm(data = eggSizeByYear, sd_volume ~ SST + ConvergentZone + EggOrder, weights = num_samples))
-summary(lm(data = eggSizeByYear, sd_volume ~ SSP + ConvergentZone + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, u_volume ~ SSP + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, u_volume ~ ran_sst + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, sd_volume ~ SST + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, sd_volume ~ SSP + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, sd_volume ~ ran_sst + EggOrder, weights = num_samples))
 
-##########################Model residuals 
+summary(lm(data = filter(eggSizeByYear, ConvergentZone == 0), u_volume ~ SST + EggOrder, weights = num_samples))
 
 
 #####Model both eggs together with basic variables and environmental variables#######
