@@ -167,28 +167,16 @@ boxplot(data = eggSizeNoOddYear, Volume ~ Year)
 #eggSizeNoOdd <- filter(eggSizeCleaned, EggOrder != 'ODDBALL')
 
 
-#####################plot lines for each island#######
-plot(data = eggSizeNoOdd, Volume ~ Year)
-plot(data = eggSizeNoOdd, Volume ~ Year, type = 'n')
-colors <- c('red', 'blue', 'green', 'purple', 'orange')
-i = 0
-for(zone in unique(eggSizeNoOdd$Location)){
-  i <- i+1
-  points(data = filter(eggSizeNoOdd, Location == zone), Volume ~ Year, col = colors[i+1], pch = 16)
-  if(length(unique(filter(eggSizeNoOdd, Location == zone)$Year) > 1)){
-    coefs <- coef(lm(data = filter(eggSizeNoOdd, Location == zone), Volume ~ Year))
-    abline(coefs[1], coefs[2], col = colors[i+1])
-  }
-}
-
-p <- ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
+#####################plot facets for each island#######
+eggSizeNoOdd <- mutate(eggSizeNoOdd, Region = ifelse(ConvergentZone, 'Gough', 'Tristan'))
+p <- ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
   geom_point() +
   geom_smooth(method = lm)
 
-p + facet_grid(Location ~ EggOrder)
+p + facet_grid(Region ~ EggOrder)
 
 
-ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
   geom_point() + 
   geom_smooth(method = lm)
 
@@ -387,7 +375,8 @@ ForagingMonthsLiberal <- c(4,5,6,7)
 ForagingMonthsCons <- c(5,6)
 BroodingMonths <- c(10,11,12,1)
 
-LayingMonthsG <- c(8,9)
+#LayingMonthsG <- c(8,9)
+LayingMonthsG <- 8
 LayingMonthsT <- 8
 
 
