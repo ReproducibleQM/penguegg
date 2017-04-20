@@ -389,6 +389,11 @@ for(row in 1:length(eggSizeNoOdd[,1])){
   }
 }
 
+#########################Model volume mean and variance by year#########
+
+
+
+
 
 #####Model both eggs together with basic variables and environmental variables#######
 m_tog_1 <- lm(data = eggSizeNoOdd, Volume ~ EggOrder)
@@ -421,6 +426,8 @@ aictab(cand.set = list(m_tog_1, m_tog_2, m_tog_3, m_tog_4, m_tog_5, m_tog_6, m_t
 
 summary(m_tog_9)
 summary(m_tog_10)
+
+
 
 ####Notes
 
