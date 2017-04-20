@@ -392,8 +392,19 @@ for(row in 1:length(eggSizeNoOdd[,1])){
 
 #########################Model volume mean and variance by year#########
 
+eggSizeNoOdd %>%
+  group_by(Year, Location, EggOrder) %>% summarize(u_volume = mean(Volume, na.rm = T),
+                               sd_volume = sd(Volume, na.rm = T),
+                               num_samples = length(Volume),
+                               SST = mean(SST),
+                               SSP = mean(SSP)) -> eggSizeByYear
 
+summary(lm(data = eggSizeByYear, u_volume ~ SST + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, u_volume ~ SSP + ConvergentZone + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, sd_volume ~ SST + ConvergentZone + EggOrder, weights = num_samples))
+summary(lm(data = eggSizeByYear, sd_volume ~ SSP + ConvergentZone + EggOrder, weights = num_samples))
 
+##########################Model residuals 
 
 
 #####Model both eggs together with basic variables and environmental variables#######
