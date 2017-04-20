@@ -10,6 +10,7 @@ library(geosphere)
 library(scales)
 library(RColorBrewer)
 library(AICcmodavg)
+library(tidyverse)
 
 #########################import data##############################
 rawEggSize <- read.csv("NRPE_eggSize_raw.csv")
@@ -427,6 +428,37 @@ aictab(cand.set = list(m_tog_1, m_tog_2, m_tog_3, m_tog_4, m_tog_5, m_tog_6, m_t
 summary(m_tog_9)
 summary(m_tog_10)
 
+######TRACY#####
+
+#Analysis within island across years
+data.night <- eggSizeNoOdd %>% filter(Location == 'Nightingale')
+
+m_night_1 <- lm(data = data.night, Volume ~ EggOrder)
+m_night_2 <- lm(data = data.night, Volume ~ EggOrder + Year)
+m_night_3 <- lm(data = data.night, Volume ~ EggOrder + SST)
+m_night_4 <- lm(data = data.night, Volume ~ EggOrder + Year + SST)
+
+aictab(list(m_night_1, m_night_2, m_night_3, m_night_4))
+
+#Analysis within island across years
+data.tdc <- eggSizeNoOdd %>% filter(Location == 'Tristan')
+
+m_tdc_1 <- lm(data = data.tdc, Volume ~ EggOrder)
+m_tdc_2 <- lm(data = data.tdc, Volume ~ EggOrder + Year)
+m_tdc_3 <- lm(data = data.tdc, Volume ~ EggOrder + SST)
+m_tdc_4 <- lm(data = data.tdc, Volume ~ EggOrder + Year + SST)
+
+aictab(list(m_tdc_1, m_tdc_2, m_tdc_3, m_tdc_4))
+
+#Analysis within year across islands
+data.2014 <- eggSizeNoOdd %>% filter(Year == '2014')
+
+m_2014_1 <- lm(data = data.2014, Volume ~ EggOrder)
+m_2014_2 <- lm(data = data.2014, Volume ~ EggOrder + Location)
+m_2014_3 <- lm(data = data.2014, Volume ~ EggOrder + SST)
+m_2014_4 <- lm(data = data.2014, Volume ~ EggOrder + Location + SST)
+
+aictab(list(m_2014_1, m_2014_2, m_2014_3, m_2014_4))
 
 
 ####Notes
