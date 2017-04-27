@@ -170,21 +170,25 @@ boxplot(data = eggSizeNoOddYear, Volume ~ Year)
 
 #####################plot facets for each island#######
 eggSizeNoOdd <- mutate(eggSizeNoOdd, Region = ifelse(ConvergentZone, 'Gough', 'Tristan'))
-p <- ggplot(data= eggSizeNoOdd, aes(y = SST, x = SSP))+
+p <- ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
   geom_point(fill = as.numeric(as.factor(eggSizeNoOdd$Location))) +
-  geom_smooth(method = lm)
+  geom_smooth(method = lm, se = FALSE)+
+  xlab('Sea surface temperature')
 
-p + facet_grid(Region ~ EggOrder)
+p + facet_grid(. ~ Location)+
+  theme_classic()
 
-
-ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
-  geom_point() + 
-  geom_smooth(method = lm)
 
 ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
   geom_point() + 
   geom_smooth(method = lm)
 
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
+  geom_point() + 
+  geom_smooth(method = lm)
+
+
+summary(lm(data = eggSizeNoOdd, Volume ~ SST + Location))
 
 #################Model selection for basic variables###############
 ##'SST at different ranges
