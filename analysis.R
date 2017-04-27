@@ -170,8 +170,8 @@ boxplot(data = eggSizeNoOddYear, Volume ~ Year)
 
 #####################plot facets for each island#######
 eggSizeNoOdd <- mutate(eggSizeNoOdd, Region = ifelse(ConvergentZone, 'Gough', 'Tristan'))
-p <- ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
-  geom_point() +
+p <- ggplot(data= eggSizeNoOdd, aes(y = SST, x = SSP))+
+  geom_point(fill = as.numeric(as.factor(eggSizeNoOdd$Location))) +
   geom_smooth(method = lm)
 
 p + facet_grid(Region ~ EggOrder)
@@ -407,6 +407,9 @@ for(row in 1:length(eggSizeNoOdd[,1])){
 }
 
 #########################Model volume mean and variance by year#########
+
+summary(lm(data = eggSizeNoOdd, Volume ~ Year))
+summary(lm(data = eggSizeNoOdd, Volume ~ SST))
 
 eggSizeNoOdd %>%
   group_by(Year, ConvergentZone, EggOrder) %>% summarize(u_volume = mean(Volume, na.rm = T),
