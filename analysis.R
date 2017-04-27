@@ -536,6 +536,50 @@ aictab(list(m_resid_3, m_resid_4, m_resid_5))
 summary(m_resid_3)
 #Model with SST is better, coef is 0.17 and is not significant
 
+########Figures for poster###################
+#scatterplot for changes over years
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = Year))+
+  geom_point() + theme_classic() + ggtitle("Overall change in egg volume over time")+ 
+  geom_smooth(method = lm) + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 18,face="bold")) +
+  theme(plot.title = element_text(size = rel(2))) 
+
+#scatterplot for changes in SST
+ggplot(data= eggSizeNoOdd, aes(y = Volume, x = SST))+
+  geom_point() + theme_classic() + ggtitle("Potential effect of sea surface on egg volume")+
+  geom_smooth(method = lm) + theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 18,face="bold")) +
+  theme(plot.title = element_text(size = rel(2))) + xlab("Sea surface temperature (°C)")
+
+#boxplot comparing a and b eggs
+ggplot(data = eggSizeNoOdd, aes(y=Volume,x=EggOrder,fill=EggOrder)) + geom_boxplot() + 
+  theme_classic() + ggtitle("B eggs are larger than A eggs") +xlab("Egg Order") +ylab("Volume (units?)")+
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(axis.text = element_text(size = 12), axis.title = element_text(size = 16,face="bold")) +
+  theme(plot.title = element_text(size = rel(2))) + scale_fill_brewer(palette = "Set3")
+
+#boxplot comparing egg size among islands
+ggplot(data = eggSizeNoOdd, aes(y=Volume,x=Location,fill=Location)) + geom_boxplot() + 
+  theme_classic() + ggtitle("Variation among islands") +xlab("Island") +ylab("Volume (units?)")+
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 18,face="bold")) +
+  theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = rel(2))) + 
+  scale_fill_brewer(palette="Set1")
+
+##+ stat_summary(fun.data = give.n, geom = "text", 
+##        position = position_dodge(height = 0, width = .75), size = 3)
+
+#graph panel for SST
+ggplot(data = eggSizeNoOdd, aes(y=Volume, x=SST)) + geom_point() + facet_grid(Location ~ EggOrder) +
+  geom_smooth(method = "lm", se = FALSE)+ theme_bw() + theme(panel.grid.major = element_blank(),
+                                                             panel.grid.minor = element_blank(),
+                                                             strip.background = element_rect(colour="white", fill="white"),
+                                                             panel.border = element_rect(colour = "black")) + ggtitle("Comparisons among islands") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 18,face="bold"),
+        strip.text = element_text(size = 16)) +
+  theme(plot.title = element_text(size = rel(2))) + xlab("Sea surface temperature (°C)")
+
+
 ####Notes
 
 ##Model with weighting parameter, mean and variance separately
